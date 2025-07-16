@@ -76,6 +76,27 @@ Node *updateTask(Node* head, int id) {
     return head;
 }
 
+void searchTask(Node* head, char* keyword) {
+    if (!head) {
+        printf("Danh sach rong.\n");
+        return;
+    }
+
+    int found = 0;
+    Node* temp = head;
+    while (temp) {
+        if (temp->data.id == atoi(keyword) || strstr(temp->data.title, keyword)) {
+            printf("Tim thay: ID: %d || Tieu de: %s || Uu tien: %d || Deadline: %s\n",
+                   temp->data.id, temp->data.title, temp->data.priority, temp->data.deadline);
+            found = 1;
+        }
+        temp = temp->next;
+    }
+
+    if (!found) {
+        printf("Khong tim thay nhiem vu voi tu khoa: %s\n", keyword);
+    }
+}
 
 
 void displayTasks(Node *head) {
@@ -131,13 +152,16 @@ int main() {
             scanf("%d", &task.id); getchar();
 
             printf("Nhap tieu de nhiem vu: ");
-            gets(task.title); getchar();
+            fgets(task.title, sizeof(task.title), stdin);
+            task.title[strcspn(task.title, "\n")] = '\0';
 
             printf("Nhap muc do uu tien: ");
             scanf("%d", &task.priority);
+            getchar();
 
             printf("Nhap thoi gian hoan thanh: ");
-            gets(task.deadline); getchar();
+            fgets(task.deadline, sizeof(task.deadline), stdin);
+            task.deadline[strcspn(task.deadline, "\n")] = '\0';
 
             head = addTask(head, task);
         } else if (choice == 2) {
@@ -156,7 +180,14 @@ int main() {
             head = updateTask(head, id);
         } else if (choice == 6) {
             sortByPriority(head);
+        } else if (choice == 7) {
+            char keyword[50];
+            printf("Nhap tu khoa tim kiem (id hoac mot phan tieu de): ");
+            fgets(keyword, sizeof(keyword), stdin);
+            keyword[strcspn(keyword, "\n")] = '\0';
+            searchTask(head, keyword);
         }
-    } while (choice != 8);
-return 0;
-}
+        } while (choice != 8);
+        return 0;
+    }
+
